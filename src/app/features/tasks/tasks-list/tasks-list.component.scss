@@ -1,0 +1,170 @@
+// Design tokens
+$primary-color: #0078d4;
+$primary-hover: #005a9e;
+$secondary-color: #6c757d;
+$secondary-hover: #5a6268;
+$danger-color: #d83b01;
+$danger-hover: #a52700;
+$border-radius: 4px;
+$font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+$table-header-bg: #f9fafb;
+$table-row-hover: #f3f4f6;
+$table-border: #e5e7eb;
+$page-bg: #f4f6f8;
+
+// Base page
+body {
+  font-family: $font-family;
+  background-color: $page-bg;
+  margin: 0;
+  padding: 0;
+  color: #333;
+}
+
+// Header
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+
+  h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #222;
+  }
+
+  .btn {
+    padding: 0.6rem 1.2rem;
+    border-radius: $border-radius;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background 0.2s ease;
+    cursor: pointer;
+
+    &.primary {
+      background: $primary-color;
+      color: #fff;
+
+      &:hover {
+        background: $primary-hover;
+      }
+    }
+
+    &.secondary {
+      background: $secondary-color;
+      color: #fff;
+
+      &:hover {
+        background: $secondary-hover;
+      }
+    }
+
+    &.danger {
+      background: $danger-color;
+      color: #fff;
+      border: none;
+
+      &:hover {
+        background: $danger-hover;
+      }
+    }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+  }
+}
+
+// Table
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+
+  th,
+  td {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid $table-border;
+  }
+
+  th {
+    background: $table-header-bg;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #444;
+  }
+
+  tr:hover td {
+    background: $table-row-hover;
+  }
+
+  td .btn {
+    margin-right: 0.5rem;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+// Empty state
+.no-tasks {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  color: #666;
+  text-align: center;
+}
+
+// Pagination
+.pager {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+
+  button {
+    padding: 0.5rem 0.9rem;
+    border: 1px solid #ccc;
+    background: #fff;
+    cursor: pointer;
+    border-radius: $border-radius;
+    font-size: 0.9rem;
+    transition: all 0.2s ease;
+
+    &:hover:not(:disabled) {
+      background: $primary-color;
+      color: #fff;
+      border-color: $primary-color;
+    }
+
+    &.active {
+      background: $primary-color;
+      color: #fff;
+      font-weight: 600;
+      border-color: $primary-color;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+  
+}
+
+.btnAdd {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #0078d4; // primary blue
+    color: #fff;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background 0.2s ease;
+  }

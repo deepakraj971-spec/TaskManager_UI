@@ -1,0 +1,14 @@
+<nav class="topnav">
+  <a routerLink="/" class="brand">TaskManager</a>
+  <span class="spacer"></span>
+  <a routerLink="/tasks" *ngIf="isAuth()">Tasks</a>
+  <a routerLink="/login" *ngIf="!isAuth()">Login</a>
+  <a routerLink="/register" *ngIf="!isAuth()">Register</a>
+  <button (click)="logout()" *ngIf="isAuth()">Logout</button>
+</nav>
+
+<app-alert></app-alert>
+
+<main class="content">
+  <router-outlet></router-outlet>
+</main>

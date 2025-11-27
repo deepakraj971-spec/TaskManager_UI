@@ -1,0 +1,4 @@
+<div *ngIf="errors.message()" class="alert">
+  {{ errors.message() }}
+  <button class="close" (click)="errors.clear()">×</button>
+</div>

@@ -1,0 +1,117 @@
+// Define some design tokens
+$primary-color: #2575fc;
+$primary-hover: #1a5edb;
+$secondary-color: #6c757d;
+$danger-color: #d83b01;
+$border-radius: 8px;
+$font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+  background: #f4f6f8;
+  font-family: $font-family;
+
+  .form-card {
+    background: #fff;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    width: 100%;
+    max-width: 700px;
+
+    h2 {
+      margin-bottom: 1rem;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    form {
+      .form-group {
+        margin-bottom: 1rem;
+
+        label {
+          display: block;
+          margin-bottom: 0.4rem;
+          font-weight: 600;
+          color: #444;
+        }
+
+        input,
+        select,
+        textarea {
+          width: 100%;
+          padding: 0.7rem;
+          border: 1px solid #ccc;
+          border-radius: $border-radius;
+          font-size: 0.95rem;
+          transition: border-color 0.3s;
+
+          &:focus {
+            border-color: $primary-color;
+            outline: none;
+          }
+        }
+
+        .error {
+          margin-top: 0.3rem;
+          font-size: 0.85rem;
+          color: #d9534f;
+        }
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+      }
+
+      .actions {
+        display: flex;
+        gap: 0.75rem;
+        margin-top: 1.5rem;
+
+        button {
+          flex: 1;
+          padding: 0.8rem;
+          background: $primary-color;
+          color: #fff;
+          border: none;
+          border-radius: $border-radius;
+          font-size: 1rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: background 0.3s;
+
+          &:hover:not(:disabled) {
+            background: $primary-hover;
+          }
+
+          &:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+          }
+        }
+
+        .btn.secondary {
+          flex: 1;
+          padding: 0.8rem;
+          background: $secondary-color;
+          color: #fff;
+          border-radius: $border-radius;
+          text-align: center;
+          text-decoration: none;
+          font-weight: 600;
+          transition: background 0.3s;
+
+          &:hover {
+            background: darken($secondary-color, 5%);
+          }
+        }
+      }
+    }
+  }
+}

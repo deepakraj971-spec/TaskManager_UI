@@ -1,0 +1,19 @@
+<nav class="topnav">
+  <div class="nav-left">
+    <span class="app-title">Task Manager</span>
+  </div>
+
+  <div class="nav-right">
+    <button (click)="logout()" class="btn logout">
+    @if (isAuth()) {
+        Logout
+    }
+</button>
+  </div>
+</nav>
+
+<app-alert></app-alert>
+
+<main class="content">
+  <router-outlet></router-outlet>
+</main>

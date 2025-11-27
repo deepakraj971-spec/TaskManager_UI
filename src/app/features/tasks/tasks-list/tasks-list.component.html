@@ -1,0 +1,47 @@
+<div class="header">
+  <h2>Tasks</h2>
+  <a routerLink="/tasks/new" class="btnAdd">Add Task</a>
+</div>
+
+<div *ngIf="loading">Loading...</div>
+
+<table *ngIf="!loading && tasks.length > 0" class="table">
+  <thead>
+    <tr>
+      <th>Title</th>
+      <th>Description</th>
+      <th>Priority</th>
+      <th>Status</th>
+      <th>Due Date</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let t of tasks">
+      <td>{{ t.title }}</td>
+      <td>{{ t.description }}</td>
+      <td>{{ t.priority }}</td>
+      <td>{{ t.status }}</td>
+      <td>{{ t.dueDate | date:'mediumDate' }}</td>
+      <td>
+        <button class="btn secondary" (click)="editTask(t.id)">Edit</button>
+        <button class="btn danger" (click)="deleteTask(t.id)">Delete</button>
+      </td>
+
+    </tr>
+  </tbody>
+</table>
+
+<div *ngIf="!loading && tasks.length === 0">No tasks found.</div>
+
+<!-- Pagination buttons -->
+<div class="pager" *ngIf="!loading && totalPages > 1">
+  <button (click)="prev()" [disabled]="page === 1">Previous</button>
+
+  <!-- Page number buttons -->
+  <ng-container *ngFor="let p of [].constructor(totalPages); let i = index">
+    <button (click)="goToPage(i+1)" [class.active]="page === i+1">{{ i+1 }}</button>
+  </ng-container>
+
+  <button (click)="next()" [disabled]="page >= totalPages">Next</button>
+</div>
