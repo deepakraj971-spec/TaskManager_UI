@@ -2,39 +2,40 @@ import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
-import { LoginResponse, RegisterResponse } from '../models/auth.model';
+import { ApiResponse } from '../models/api-response.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private tokenKey = 'tm_token';
-  isAuthenticated = signal<boolean>(this.hasToken());
+
+  isAuthenticated = signal<boolean>(false);
 
   constructor(private http: HttpClient) {}
 
-  login(credentials: { email: string; password: string }): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${environment.apiBaseUrl}/auth/login`, credentials);
+  login(credentials: { email: string; password: string }): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(
+      `${environment.apiBaseUrl}/auth/login`,
+      credentials,
+      { withCredentials: true } 
+    );
   }
 
-  register(payload: { name: string; email: string; password: string }): Observable<string> {
-  return this.http.post(`${environment.apiBaseUrl}/auth/register`, payload, { responseType: 'text' });
-}
-
-
-  saveToken(token: string) {
-    localStorage.setItem(this.tokenKey, token);
-    this.isAuthenticated.set(true);
+  logout(): Observable<ApiResponse<any>> {
+    return this.http.post<ApiResponse<any>>(
+      `${environment.apiBaseUrl}/auth/logout`,
+      {},
+      { withCredentials: true }
+    );
   }
 
-  getToken(): string | null {
-    return localStorage.getItem(this.tokenKey);
+  checkSession(): Observable<ApiResponse<any>> {
+    return this.http.get<ApiResponse<any>>(`${environment.apiBaseUrl}/auth/me`, { withCredentials: true });
   }
 
-  hasToken(): boolean {
-    return !!localStorage.getItem(this.tokenKey);
+  updateAuthState(authenticated: boolean) {
+    this.isAuthenticated.set(authenticated);
   }
 
-  logout() {
-    localStorage.removeItem(this.tokenKey);
-    this.isAuthenticated.set(false);
+  register(payload: { name: string; email: string; password: string }): Observable<ApiResponse<boolean>> {
+    return this.http.post<ApiResponse<boolean>>(`${environment.apiBaseUrl}/auth/register`, payload);
   }
 }

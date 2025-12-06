@@ -16,6 +16,7 @@ import { ApiError } from '../../../core/models/auth.model';
 export class LoginComponent {
   form: FormGroup;
   successMessage: string | null = null;
+  serverError: string | null = null;
 
   constructor(
     fb: FormBuilder,
@@ -28,13 +29,6 @@ export class LoginComponent {
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]]
     });
-
-    this.route.queryParams.subscribe(params => {
-      if (params['registered'] === 'true') {
-        this.successMessage = 'Registration successful! Please log in.';
-        setTimeout(() => this.successMessage = null, 6000);
-      }
-    });
   }
 
   submit() {
@@ -42,13 +36,15 @@ export class LoginComponent {
 
   this.auth.login(this.form.value).subscribe({
     next: (res) => {
-      this.auth.saveToken(res.token);
-      const redirect = this.route.snapshot.queryParams['redirect'] ?? '/tasks';
-      this.router.navigate([redirect]);
+      if (res.success) {
+      this.auth.updateAuthState(true);
+      this.router.navigate(['/tasks']);
+    }
     },
     error: (err) => {
+      this.auth.updateAuthState(false);
       const apiError = err.error as ApiError;
-      this.errors.show(apiError?.message || 'Invalid email or password.');
+      this.serverError = apiError?.message || 'Login failed. Please try again.';
     }
   });
 }

@@ -22,6 +22,7 @@ export class RegisterComponent {
     private auth: AuthService,
     private router: Router,
     private errors: ErrorService
+    
   ) {
     this.form = fb.group({
       name: ['', Validators.required],
@@ -40,6 +41,7 @@ export class RegisterComponent {
   submit() {
   this.serverError = null; // reset before submit
   if (this.form.invalid) {
+    this.serverError ='';
     this.errors.show('Please fix the errors in the form.');
     return;
   }
@@ -48,15 +50,14 @@ export class RegisterComponent {
 
   this.auth.register({ name, email, password }).subscribe({
     next: (res) => {
-      if (res) {
+      if (res.success && res.data) {
         this.router.navigate(['/login']);
+        alert('Registration Successfull.Please login');
       } 
     },
     error: (err) => {
-      console.log(err);
-      // strongly typed error handling
       const apiError = err.error as ApiError;
-      this.errors.show(apiError?.message || 'Registration failed. Please try again.');
+      this.serverError = apiError?.message || 'Registration failed. Please try again.';
     }
   });
   }

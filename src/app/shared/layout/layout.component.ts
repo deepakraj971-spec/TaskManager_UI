@@ -20,7 +20,9 @@ export class LayoutComponent {
   }
 
   logout() {
-    this.AuthService.logout();
-    this.router.navigate(['/login']); // redirect to login page
+    this.AuthService.logout().subscribe(() => {
+    this.AuthService.updateAuthState(false);
+    this.router.navigate(['/login']);
+  });
   }
 }

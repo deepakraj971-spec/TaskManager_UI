@@ -32,15 +32,39 @@ export class TasksListComponent implements OnInit {
     return Math.ceil(this.total / this.pageSize) || 1;
   }
 
+  private loadTasksAfterDelete() {
+  this.tasksService.getAll({ page: this.page, pageSize: this.pageSize }).subscribe({
+    next: res => {
+      if (res.success && res.data) {
+        // If current page is empty after deletion, go back one page
+        if (res.data.items.length === 0 && this.page > 1) {
+          this.page--;
+          this.loadTasks(); // reload previous page
+        } else {
+          this.tasks = res.data.items;
+          this.total = res.data.total;
+          this.page = res.data.page;
+          this.pageSize = res.data.pageSize;
+        }
+      }
+    },
+    error: () => this.errors.show('Failed to reload tasks.')
+  });
+}
+
   loadTasks() {
     this.loading = true;
     this.tasksService.getAll({ page: this.page, pageSize: this.pageSize }).subscribe({
       next: res => {
-        this.tasks = res.items;
-        this.total = res.total;
-        this.page = res.page;
-        this.pageSize = res.pageSize;
+         if (res.success && res.data) {
+        this.tasks = res.data.items;
+        this.total = res.data.total;
+        this.page = res.data.page;
+        this.pageSize = res.data.pageSize;
         this.loading = false;
+         }else {
+      console.error('Failed to load tasks:', res.message);
+    }
       },
       error: () => {
         this.loading = false;
@@ -51,11 +75,17 @@ export class TasksListComponent implements OnInit {
   editTask(id: string) {
   this.router.navigate(['/tasks/edit', id]);
 }
-  // 👇 Add this method
+  
   deleteTask(id: string) {
     if (!confirm('Delete this task?')) return;
     this.tasksService.delete(id).subscribe({
-      next: () => this.loadTasks(),
+      next: (res) => {
+        if (res.success) {
+          this.loadTasksAfterDelete();
+        } else {
+          console.log('Delete failed');
+        }
+      },
       error: () => this.errors.show('Delete failed. Please try again.')
     });
   }

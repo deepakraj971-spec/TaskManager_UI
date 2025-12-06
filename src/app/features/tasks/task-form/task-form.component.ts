@@ -47,14 +47,18 @@ export class TaskFormComponent {
   private loadTask(id: string) {
     this.tasks.getById(id).pipe(take(1)).subscribe({
       next: task => {
-        const dueDate = task.dueDate ? this.toDateInputValue(new Date(task.dueDate)) : '';
+         if (task.success && task.data) {
+        const dueDate = task.data.dueDate ? this.toDateInputValue(new Date(task.data.dueDate)) : '';
         this.form.patchValue({
-          title: task.title,
-          description: task.description,
+          title: task.data.title,
+          description: task.data.description,
           dueDate,
-          priority: task.priority,
-          status: task.status
+          priority: task.data.priority,
+          status: task.data.status
         });
+      } else {
+          console.log('Task not found');
+        }
       },
       error: (err: HttpErrorResponse) => this.errors.show('Failed to load task.')
     });
@@ -78,19 +82,30 @@ export class TaskFormComponent {
 
     if (!this.isEdit) {
       this.tasks.create(payload).subscribe({
-        next: () => this.router.navigate(['/tasks']),
+        next: (res) => {
+        if (res.success && res.data) {
+          this.router.navigate(['/tasks']);
+        } else {
+          console.log(res.message || 'Task creation failed');
+        }
+      },
         error: () => this.errors.show('Create failed. Please try again.')
       });
     } else if (this.id) {
       this.tasks.update(this.id, payload).subscribe({
-        next: () => this.router.navigate(['/tasks']),
+        next: (res) => {
+        if (res.success) {
+          this.router.navigate(['/tasks']);
+        } else {
+          console.log(res.message || 'Update failed');
+        }
+      },
         error: () => this.errors.show('Update failed. Please try again.')
       });
     }
   }
 
   cancel() {
-    // 👇 navigate back to list page
     this.router.navigate(['/tasks']);
   }
 }

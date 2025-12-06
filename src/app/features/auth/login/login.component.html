@@ -21,7 +21,9 @@
 
       <button type="submit" [disabled]="form.invalid">Login</button>
     </form>
-
+    <div class="error" *ngIf="serverError ">
+    {{ serverError }}
+    </div>
     <p class="switch-text">
       Don’t have an account?
       <a routerLink="/register">Register here</a>
