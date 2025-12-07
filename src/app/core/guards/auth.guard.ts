@@ -8,19 +8,18 @@ export const authGuard = async () => {
   const router = inject(Router);
 
   try {
-    // Ping backend to check if cookie/session is valid
     const res = await firstValueFrom(auth.checkSession());
     if (res.success) {
       auth.updateAuthState(true);
       return true;
-    } else {
-      auth.updateAuthState(false);
-      router.navigate(['/login'], { queryParams: { redirect: location.pathname } });
-      return false;
     }
+    auth.updateAuthState(false);
+    router.navigate(['/login'], { queryParams: { redirect: location.pathname } });
+    return false;
   } catch {
     auth.updateAuthState(false);
     router.navigate(['/login'], { queryParams: { redirect: location.pathname } });
     return false;
   }
 };
+

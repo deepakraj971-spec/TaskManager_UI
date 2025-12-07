@@ -31,6 +31,13 @@ export class AuthService {
     return this.http.get<ApiResponse<any>>(`${environment.apiBaseUrl}/auth/me`, { withCredentials: true });
   }
 
+  refresh(): Observable<ApiResponse<any>> {
+  return this.http.post<ApiResponse<any>>(
+    `${environment.apiBaseUrl}/auth/refresh`,
+    {},
+    { withCredentials: true }
+  );
+}
   updateAuthState(authenticated: boolean) {
     this.isAuthenticated.set(authenticated);
   }

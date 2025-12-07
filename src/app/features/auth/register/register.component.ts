@@ -50,7 +50,7 @@ export class RegisterComponent {
 
   this.auth.register({ name, email, password }).subscribe({
     next: (res) => {
-      if (res.success && res.data) {
+      if (res.success) {
         this.router.navigate(['/login']);
         alert('Registration Successfull.Please login');
       } 

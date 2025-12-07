@@ -1,27 +1,45 @@
-# TaskManager
+# Task Manager
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.21.
+A task management application built with **Angular 18**, featuring authentication, route guards, HTTP interceptors, and task CRUD operations.
 
-## Development server
+---
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## Features
 
-## Code scaffolding
+- **Authentication**
+  - Login, logout, register
+  - Session check & refresh
+  - Auth state management using Angular signals
+- **Route Guard**
+  - Protects routes based on authentication state
+  - Redirects unauthenticated users to login
+- **HTTP Interceptor**
+  - Attaches credentials to requests
+  - Handles 401/403 errors
+  - Refreshes tokens automatically
+- **Task Management**
+  - Create, read, update, delete tasks, pagination
+- **Error Handling**
+  - Centralized error service for user-friendly messages
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+---
 
-## Build
+## Project Setup
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+### Prerequisites
 
-## Running unit tests
+- Node.js (>= 18.x)
+- Angular CLI (>= 18.x)
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+### Installation
 
-## Running end-to-end tests
+```bash
+# Clone repository
+git clone <your-repo-url>
+cd task-manager
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+# Install dependencies
+npm install
 
-## Further help
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+```
