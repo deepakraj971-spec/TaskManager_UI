@@ -71,39 +71,39 @@ export class TaskFormComponent {
     return `${yyyy}-${mm}-${dd}`;
   }
 
-  submit() {
-    if (this.form.invalid) {
-      this.errors.show('Please fill out required fields.');
-      return;
-    }
-
-    const payload: any = { ...this.form.value };
-    if (payload.dueDate) payload.dueDate = new Date(payload.dueDate).toISOString();
-
-    if (!this.isEdit) {
-      this.tasks.create(payload).subscribe({
-        next: (res) => {
-        if (res.success && res.data) {
-          this.router.navigate(['/tasks']);
-        } else {
-          console.log(res.message || 'Task creation failed');
-        }
-      },
-        error: () => this.errors.show('Create failed. Please try again.')
-      });
-    } else if (this.id) {
-      this.tasks.update(this.id, payload).subscribe({
-        next: (res) => {
-        if (res.success) {
-          this.router.navigate(['/tasks']);
-        } else {
-          console.log(res.message || 'Update failed');
-        }
-      },
-        error: () => this.errors.show('Update failed. Please try again.')
-      });
-    }
+submit() {
+  if (this.form.invalid) {
+    this.errors.show('Please fix validation errors before submitting.');
+    return;
   }
+
+  const payload: any = { ...this.form.value };
+  if (payload.dueDate) payload.dueDate = new Date(payload.dueDate).toISOString();
+
+  const request$ = this.isEdit && this.id
+    ? this.tasks.update(this.id, payload)
+    : this.tasks.create(payload);
+
+  request$.subscribe({
+    next: (res) => {
+      if (res.success) {
+        this.router.navigate(['/tasks']);
+        this.errors.show(this.isEdit ? 'Task Updated successfully!': 'Task Created successfully!');
+      }
+    },
+    error: (err: HttpErrorResponse) => {
+      if (err.error && err.error.errors?.extraError) {
+        this.errors.show(err.error.errors.extraError);
+      } else if (err.error && err.error.message) {
+        this.errors.show(err.error.message);
+      } else {
+      this.errors.show(this.isEdit ? 'Update failed. Please try again.' : 'Create failed. Please try again.');
+      }
+    }
+
+  });
+}
+
 
   cancel() {
     this.router.navigate(['/tasks']);

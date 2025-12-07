@@ -1,7 +1,7 @@
-// src/app/features/tasks/tasks-list/tasks-list.component.ts
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
+import { FormsModule } from '@angular/forms';   
 import { TasksService } from '../../../core/services/tasks.service';
 import { TaskItem } from '../../../core/models/task.model';
 import { ErrorService } from '../../../core/services/error.service';
@@ -9,7 +9,7 @@ import { ErrorService } from '../../../core/services/error.service';
 @Component({
   selector: 'app-tasks-list',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],   
   templateUrl: './tasks-list.component.html',
   styleUrls: ['./tasks-list.component.scss']
 })
@@ -33,38 +33,42 @@ export class TasksListComponent implements OnInit {
   }
 
   private loadTasksAfterDelete() {
-  this.tasksService.getAll({ page: this.page, pageSize: this.pageSize }).subscribe({
-    next: res => {
-      if (res.success && res.data) {
-        // If current page is empty after deletion, go back one page
-        if (res.data.items.length === 0 && this.page > 1) {
-          this.page--;
-          this.loadTasks(); // reload previous page
-        } else {
+    this.tasksService.getAll({ page: this.page, pageSize: this.pageSize, status: this.statusFilter || undefined, priority: this.priorityFilter || undefined }).subscribe({
+      next: res => {
+        if (res.success && res.data) {
+          if (res.data.items.length === 0 && this.page > 1) {
+            this.page--;
+            this.loadTasks();
+          } else {
+            this.tasks = res.data.items;
+            this.total = res.data.total;
+            this.page = res.data.page;
+            this.pageSize = res.data.pageSize;
+          }
+        }
+      },
+      error: () => this.errors.show('Failed to reload tasks.')
+    });
+  }
+
+  loadTasks() {
+    this.loading = true;
+    this.tasksService.getAll({
+      page: this.page,
+      pageSize: this.pageSize,
+      status: this.statusFilter || undefined,
+      priority: this.priorityFilter || undefined
+    }).subscribe({
+      next: res => {
+        if (res.success && res.data) {
           this.tasks = res.data.items;
           this.total = res.data.total;
           this.page = res.data.page;
           this.pageSize = res.data.pageSize;
+        } else {
+          console.error('Failed to load tasks:', res.message);
         }
-      }
-    },
-    error: () => this.errors.show('Failed to reload tasks.')
-  });
-}
-
-  loadTasks() {
-    this.loading = true;
-    this.tasksService.getAll({ page: this.page, pageSize: this.pageSize }).subscribe({
-      next: res => {
-         if (res.success && res.data) {
-        this.tasks = res.data.items;
-        this.total = res.data.total;
-        this.page = res.data.page;
-        this.pageSize = res.data.pageSize;
         this.loading = false;
-         }else {
-      console.error('Failed to load tasks:', res.message);
-    }
       },
       error: () => {
         this.loading = false;
@@ -72,9 +76,15 @@ export class TasksListComponent implements OnInit {
       }
     });
   }
+
+  applyFilters() {
+    this.page = 1; // reset pagination
+    this.loadTasks();
+  }
+
   editTask(id: string) {
-  this.router.navigate(['/tasks/edit', id]);
-}
+    this.router.navigate(['/tasks/edit', id]);
+  }
   
   deleteTask(id: string) {
     if (!confirm('Delete this task?')) return;
@@ -82,6 +92,7 @@ export class TasksListComponent implements OnInit {
       next: (res) => {
         if (res.success) {
           this.loadTasksAfterDelete();
+          this.errors.show('Task deleted successfully!');
         } else {
           console.log('Delete failed');
         }
